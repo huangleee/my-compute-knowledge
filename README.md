@@ -137,3 +137,12 @@ if __name__ == '__main__':
 3. 打开该文件，可以看到系统调用情况。socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3 得到一个socket，该socket对应的文件fd为3；将该fd，作为参数传递给 bind 函数，即该 fd 绑定指定IP和端口；接着 调用 listen，即该fd 开始监听连接，最大连接客户端数为 20；最后一行就是阻塞等待客户端的连接
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-2.png)
+
+4. 此时在另一个窗口，使用nc命令建立客户端连接  nc 127.0.0.1 5010，可看到目录下多了一个日志文件。
+5. 可以看到主线程收到连接请求之后，生成了一个新的fd，指代这个请求。然后创建了一个新的线程处理连接（系统调用中，clone方法创建线程，与主线程有不同的栈，相同的堆），并返回了新的线程的id。然后又阻塞等待新的连接
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-3.png)
+
+5. 新线程阻塞等待客户端发送数据
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-4.png)
