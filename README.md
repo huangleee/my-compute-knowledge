@@ -146,3 +146,5 @@ if __name__ == '__main__':
 5. 新线程阻塞等待客户端发送数据
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-4.png)
+
+6. **使用man命令可以查看系统调用介绍，如 man 2 socket,  man 2 clone**
