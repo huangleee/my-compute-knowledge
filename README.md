@@ -131,3 +131,9 @@ if __name__ == '__main__':
 
 1. 执行命令： strace -ff -o out python BIO.py
 2. 在另一个窗口，可以看到有一个文件出现
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-1.png)
+
+3. 打开该文件，可以看到系统调用情况。socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3 得到一个socket，该socket对应的文件fd为3；将该fd，作为参数传递给 bind 函数，即该 fd 绑定指定IP和端口；接着 调用 listen，即该fd 开始监听连接，最大连接客户端数为 20；最后一行就是阻塞等待客户端的连接
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-2.png)
