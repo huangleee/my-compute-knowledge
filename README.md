@@ -155,11 +155,14 @@ socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3
 bind(3, {sa_family=AF_INET, sin_port=htons(5010), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
 listen(3, 20)
 while:
-	accept(3, {sa_family=AF_INET, sin_port=htons(48782), sin_addr=inet_addr("127.0.0.1")}, [16]) = 4
+	accept(3, {sa_family=AF_INET, sin_port=htons(48782), sin_addr=inet_addr("127.0.0.1")}, [16]) = 4	# 阻塞
 	clone()
 	
 
 # 处理连接线程
 while:
-	recvfrom(4
+	recvfrom(4		 阻塞
 ```
+#### 好处与弊端
+**好处： 一个服务端可以接受N个客户端的连接，一个客户端对应一个线程
+**弊端： 阻塞调用，会创建N多个线程，消耗服务器资源，同时线程间切换，性能不高。
