@@ -9,7 +9,7 @@
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B.png?token=AC65GASKDHNZDEZZQYDUCE3AFYFVU)
 
 ### 数据包编解码流程
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B0%E6%8D%AE%E5%8C%85%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E6%B5%81%E7%A8%8B.png?token=AC65GAR4TLS3KT46TJT23CLAFYFA6)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B0%E6%8D%AE%E5%8C%85%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E6%B5%81%E7%A8%8B.png?token=AC65GAQOHGDI6EX3FF7F3GLAFYF26)
 
 ### 数据包编解码示例
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B0%E6%8D%AE%E5%8C%85%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E7%A4%BA%E4%BE%8B.jpg?token=AC65GAWME26URQ4T2M7WELDAFYFDA)
