@@ -3,28 +3,56 @@
 ## 计算机网络 ##
 
 ### TCP/IP分层模型
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/TCP-IP%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B.png?token=AC65GAQLW4FTBWQ3T7HBNP3AFYFSO)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/TCP-IP%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B.png)
 
 ### 数据包流转整体流程
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B.png?token=AC65GASKDHNZDEZZQYDUCE3AFYFVU)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B.png)
 
 ### 数据包编解码流程
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B0%E6%8D%AE%E5%8C%85%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E6%B5%81%E7%A8%8B.png?token=AC65GAQOHGDI6EX3FF7F3GLAFYF26)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B0%E6%8D%AE%E5%8C%85%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E6%B5%81%E7%A8%8B.png)
 
 ### 数据包编解码示例
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B0%E6%8D%AE%E5%8C%85%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E7%A4%BA%E4%BE%8B.jpg?token=AC65GAWME26URQ4T2M7WELDAFYFDA)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B0%E6%8D%AE%E5%8C%85%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E7%A4%BA%E4%BE%8B.jpg)
 
 ### 数据传输层
-三次握手
+#### TCP
+###### 三次握手
+1. 状态变更
 
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%8A%B6%E6%80%81%E5%8F%98%E6%9B%B4.jpg?token=AC65GAUGPFVVYXZAJSXNCTTAFYFFQ)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%8A%B6%E6%80%81%E5%8F%98%E6%9B%B4.jpg)
 
-四次挥手
+2. 注意事项
+	1. 因为传输层是面向连接的、可靠的传输层协议，所以**接收方每次收到数据包之后，都会回一个ack的包**，确认应答。如果发送方没有收到应答，就会尝试再次发送该数据包，直到收到应答。**重试会有一个时间间隔**，多次重试之后，会认为网络异常，断开连接。
+	2. 同时为了保证数据包的有序性，会在数据包中，加上一个序列号，用于表示数据包的顺序。
+	3. 发送方为了提高速度，还会**一次性发送多个数据包**，接收方收到多个包之后，一次性发起多个包的相应应答。发送方收到应答之后，继续发送。如果没有收到应答，或者缺少了某个数据包的应答相应，发送方还需要重新发送该数据包。即**滑动窗口控制**
 
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E7%8A%B6%E6%80%81%E5%8F%98%E6%9B%B4.jpg?token=AC65GAVGJRKE7IXEACBQZUTAFYFH6)
+###### 四次挥手
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E7%8A%B6%E6%80%81%E5%8F%98%E6%9B%B4.jpg)
 
 ### 网络层与链路层
 
 mac地址变更流程
 
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/mac%E5%9C%B0%E5%9D%80%E5%8F%98%E6%9B%B4.png?token=AC65GAQIIAVPKHXFPY3ICQ3AFYFNI)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/mac%E5%9C%B0%E5%9D%80%E5%8F%98%E6%9B%B4.png)
+
+### 通信总结：
+#### 客户端
+1. 用户进程想要访问某个服务器的某个应用，发送对应的数据包，则需要知道服务器IP、端口信息，并得知道是采用TCP 还是 UDP。
+2. 在用户进程，准备好数据之后，并将要发送的数据，按照指定的应用层协议，封装数据包，并将数据包，以及上面的连接信息，调用内核。
+3. 数据传输层收到调用信号之后，判断是何种类型的包，如果是TCP，会构造新的数据包，主动发起三次握手，从而与服务端建立连接。然后在原数据包前，加上数据传输层的头部信息（源端口号、源协议类型、目的端口号、目的协议类型）。然后继续调用网络层。UDP不进行细致讲解。
+4. 网络层收到调用请求后，会根据目的IP，去本机的路由表，用目的IP，依次与路由规则中的掩码，进行二进制与操作，得到网络地址，从而找到下一跳的IP地址。找到之后，会将原数据包，加上IP层的头部信息（源IP、目的IP），并调用链路层传递数据包。
+5. 链路层在知道下一跳的IP地址之后，会去自己的arp表中，查找该IP对应的mac地址，如果找不到，就会广播一个arp数据包，问局域网内的哪台主机有该IP地址。如果主机没有该IP地址，会忽略该包，不回复。如果主机有该IP，会回复一个数据包给原主机，告诉它IP地址对应网卡的mac地址。然后原主机，就根据找到的mac地址，在原数据包上，加上链路层的头部信息（源mac地址、目的mac地址）。
+6. 调用物理层，将数据包发送出去。
+
+#### 中间节点  /  服务端
+1. 网卡收到数据包之后，链路层会解包，判断头部信息中，目的mac地址是否是本机的mac地址，不是则丢弃，是则接着往下走。
+2. 判断数据包头部信息中的数据类型，传给对应的模块，如IP、ARP等。
+3. 到IP层之后，解包，判断目的IP是否是本机IP，如果是，则继续将数据包，传递给链路层。如果不是，则需要转发出去（需要开启转发功能），去本地的路由表中，找下一跳，然后调用链路层，传递数据。
+4. 到链路层之后，会根据目的协议和目的端口，找到对应的进程id，将数据从缓冲区，拷贝到对应的用户进程中。
+5. 用户层则根据用户层协议，得到最终数据。
+
+用快递打个比方，模拟网络通信：
+1. A想发一个快递给B，传输层需要做的就是在快递上写下来收件人姓名。
+2. 网络层就是需要在快递上写下小区地址。并告诉快递员，这个快递，你应该先送去哪个地方。
+3. 链路层就是直到了要送的地方，就赶快将快递送到下一个地址。
