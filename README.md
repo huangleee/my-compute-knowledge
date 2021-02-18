@@ -91,7 +91,7 @@ mac地址变更流程
 - POSTROUTING： 针对本机、以及转发的数据包，进行过滤。
 
 ##### 图示
-![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/mac%E5%9C%B0%E5%9D%80%E5%8F%98%E6%9B%B4.png)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/%E9%98%B2%E7%81%AB%E5%A2%99.png)
 
 
 
