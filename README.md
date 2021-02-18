@@ -95,3 +95,39 @@ mac地址变更流程
 
 
 
+## IO
+### 同步阻塞IO（BIO）
+#### 解释
+同步阻塞IO，服务端启动监听端口后，会**阻塞等待客户端连接**。客户端连接来了之后，会**起一个线程，去处理这个连接**。主线程会继续阻塞去等待新的客户端连接。而处理线程，则会**阻塞等待接收客户端发送来的消息**，并处理。
+
+#### 示例代码
+```python
+import socket
+import threading
+
+
+def deal_connect(c):
+    while True:
+        res = c.recv(1024)
+        print(res)
+        if res == 'down':
+            break
+    c.close()
+
+
+if __name__ == '__main__':
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('0.0.0.0', 5010))
+    s.listen(20)
+
+    while True:
+        c, addr = s.accept()
+        t = threading.Thread(target=deal_connect, args=(c,))
+        t.start()
+```
+
+#### 内核调用跟踪
+注：linux环境下，使用strace命令，可以追踪系统调用
+
+1. 执行命令： strace -ff -o out python BIO.py
+2. 在另一个窗口，可以看到有一个文件出现
