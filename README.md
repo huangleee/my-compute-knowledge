@@ -148,3 +148,18 @@ if __name__ == '__main__':
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-4.png)
 
 6. **使用man命令可以查看系统调用介绍，如 man 2 socket,  man 2 clone**
+
+#### BIO 对应的系统调用伪代码
+```
+socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3
+bind(3, {sa_family=AF_INET, sin_port=htons(5010), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
+listen(3, 20)
+while:
+	accept(3, {sa_family=AF_INET, sin_port=htons(48782), sin_addr=inet_addr("127.0.0.1")}, [16]) = 4
+	clone()
+	
+
+# 处理连接线程
+while:
+	recvfrom(4
+```
