@@ -467,6 +467,9 @@ while:
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/redis/IO-2.png)
 
+#### 线程
+**redis使用单线程执行work**。6.0以后的版本，可以使用多线程，但是还是只有一个work线程，其他线程只是辅助线程，帮助并发执行读取或写入操作，所有的计算操作，还是在同一个work中。
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/redis/thread.png)
 
 -------------------
 ## docker
