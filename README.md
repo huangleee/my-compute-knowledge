@@ -378,3 +378,8 @@ while:
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/compare-1.png)
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/compare-2.png)
+
+**同步IO和异步IO的区别在于，同步IO都需要用户进程主动去调用内核recv去获取数据。而异步IO，用户进程不需要去调用内核拿数据，内核会主动将数据拷贝到用户进程空间，再通知用户进程去buff中取**
+
+### 扩展
+
