@@ -94,6 +94,10 @@ mac地址变更流程
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/%E9%98%B2%E7%81%AB%E5%A2%99.png)
 
 
+-----------------------------------
+
+
+
 
 ## IO
 ### 同步阻塞IO（BIO）
@@ -167,3 +171,76 @@ while:
 **好处： 一个服务端可以接受N个客户端的连接，一个客户端对应一个线程
 
 **弊端： 阻塞调用，会创建N多个线程，消耗服务器资源，同时线程间切换，性能不高。
+
+--------------------------
+
+### 同步非阻塞IO (NIO)
+#### 解释
+同步非阻塞IO：服务端启动监听端口后，**不会阻塞等待客户端连接**。客户端连接建立之后，**不会阻塞等待接收客户端发送的消息**，而是会去处理计算问题（其他连接），过段时间后，**再去向内核(kernel)询问是否有数据**。
+
+#### 示例代码
+```
+import socket
+
+
+if __name__ == '__main__':
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setblocking(False)    # socket设置非阻塞
+    s.bind(('0.0.0.0', 5010))
+    s.listen(20)
+    linkList = []       # 所有已建立连接的sock
+    delList = []        # 所有需要断开连接的sock
+    while True:
+        try:
+            c, addr = s.accept()        # python 在没有连接时，会抛异常
+            c.setblocking(False)  # client 也要设置非阻塞
+            linkList.append(c)
+        except BlockingIOError:
+            pass
+        for n in linkList:      # 遍历所有的连接，依次处理
+            try:
+                res = n.recv(1024)      # 非阻塞情况下调用recv，如果没有数据，会抛异常
+                print(res)      # 也会调用内核的 write，即 写IO
+                if not res:
+                    # 从链表中删除该连接
+                    delList.append(n)
+            except BlockingIOError:
+                pass
+            except ConnectionResetError:
+                delList.append(n)
+
+        for n in delList:
+            linkList.remove(n)
+            n.close()
+        delList = []
+```
+#### 内核调用跟踪
+
+1. 执行程序，查看系统调用情况。可见先创建了一个socket，对应的fd为3；**紧接着给这个fd 加了一个非阻塞IO锁**；然后就绑定监听ip和端口；启动监听。此时，可见程序会不停触发 accept 调用。
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/NIO-1.png)
+
+2. 另一个窗口，使用nc建立连接。可见此时有了一个客户端连接，这个sock 对应的fd 为 4；**紧接着给这个fd，也加了一个非阻塞IO锁**；此时程序调用recv 时，内核会立刻返回，而不会使整个程序阻塞。
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/NIO-2.png)
+
+#### NIO 对应系统调用伪代码
+```
+list = [] 	# 存储sock
+socket(AF_INET, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_IP) = 3
+ioctl(3, FIONBIO, [1])
+bind(3, {sa_family=AF_INET, sin_port=htons(5010), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
+listen(3, 20)                           = 0
+accept4(3, ...)  		# 不阻塞，返回 -1 | sock
+if sock:
+   ioctl(sock, FIONBIO, [1])		# 给sock加非阻塞IO锁
+   list.append(sock)
+for sock in list:
+   sock.recv()		# 步阻塞， 返回 -1 | str
+```
+
+#### 好处与弊端
+**好处：不用创建多个线程去处理客户端连接，避免资源浪费，单个线程就能非阻塞的处理所有客户端请求。
+**弊端：会不停的触发recv系统调用，即使这些sock并没有数据。频繁的系统调用，会降低程序性能。
+
+------------------------------------
