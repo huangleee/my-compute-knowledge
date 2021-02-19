@@ -372,4 +372,9 @@ while:
 	if 事件 == recv:
 	   data = recv()	# 系统调用recv
 ```
-#### 好处与弊端
+
+### 各种不同的IO模型对比
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/compare-1.png)
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/compare-2.png)
