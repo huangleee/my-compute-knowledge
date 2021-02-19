@@ -1,6 +1,5 @@
 # 计算机知识杂烩总结 #
-
-## 计算机网络 ##- [计算机知识杂烩总结](#计算机知识杂烩总结)
+- [计算机知识杂烩总结](#计算机知识杂烩总结)
   - [计算机网络](#计算机网络)
     - [TCP/IP分层模型](#tcpip分层模型)
     - [数据包流转整体流程](#数据包流转整体流程)
@@ -55,6 +54,9 @@
   - [mysql](#mysql)
   - [算法](#算法)
   - [设计模式](#设计模式)
+
+
+## 计算机网络 ##
 
 ### TCP/IP分层模型
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/TCP-IP%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B.png)
