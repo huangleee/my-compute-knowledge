@@ -462,8 +462,11 @@ while:
 
 ### redis线程、多路复用模型解析
 #### 系统调用跟踪
+**redis使用epoll来处理并发请求**。同时**redis调用epoll_wait()时，是非阻塞的**，因为redis除了处理请求外，还有一些其他操作，如定时执行持久化操作等，如果阻塞等待请求，在没有请求时，这些操作永远无法执行。
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/redis/IO-1.png)
+
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/redis/IO-2.png)
+
 
 -------------------
 ## docker
