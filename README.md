@@ -456,6 +456,14 @@ while:
 
 -----------
 ## redis
+### 简介
+- 一种kv的非关系型数据库，数据全部存储在内存中，当重启或宕机时，数据会全部丢失。但是支持数据持久化，将数据保存在磁盘中，重启时加载，进而恢复数据。
+- redis是单线程，基于epoll的。(6.0之后，支持多线程，但是对数据的操作，还是单线程，即只有一个work)。
+
+### redis线程、多路复用模型解析
+#### 系统调用跟踪
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/redis/IO-1.png)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/redis/IO-2.png)
 
 -------------------
 ## docker
