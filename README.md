@@ -353,3 +353,23 @@ if __name__ == '__main__':
    3.4 应用程序逻辑处理完成，继续等待新的IO事件。
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/epoll-3.png)
+
+#### 系统调用伪代码
+```
+epoll_create() -> 3
+socket() -> 4
+ioctl(4) 
+bind(4, ip, addr)
+listen(4)
+epoll_ctl(3, EPOLL_CTL_ADD, 4, )
+while:
+   events = epoll_wait(3)
+   for event in events:
+   	if 事件 == accept:
+	   sock = accept() -> 5	# 系统调用accept，得到sock
+	   ioctl(5) 
+	   epoll_ctl(3, EPOLL_CTL_ADD, 5, )
+	if 事件 == recv:
+	   data = recv()	# 系统调用recv
+```
+#### 好处与弊端
