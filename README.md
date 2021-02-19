@@ -262,5 +262,94 @@ IO多路复用：使用select、poll、epoll来同时监听多个IO，*当IO对�
 #### epoll
 ##### linux系统下epoll操作
 1. epoll_create: 创建一个epoll对象，返回一个fd，代表该epoll对象(linux下一切皆文件)
-2. epoll_ctl: 
+2. epoll_ctl: 控制一个epoll对象。定义: int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+	2.1 op: EPOLL_CTL_ADD, EPOLL_CTL_MOD, EPOLL_CTL_DEL
+	2.2 event: EPOLLIN, EPOLLOUT, EPOLLRDHUP , EPOLLPRI, EPOLLERR, EPOLLHUP, EPOLLET, EPOLLONESHOT 
 
+3. epoll_wait: 等待io事件，返回事件列表。
+
+#### python3 使用epoll示例
+```
+import socket
+import selectors
+
+# 对应系统调用就是epoll_create
+sel = selectors.DefaultSelector()       # 会默认选择当前系统最适合的方式：select | poll | epoll
+
+
+def accept(sock, mask):
+    conn, addr = sock.accept()
+    conn.setblocking(False)
+    sel.register(fileobj=conn, events=selectors.EVENT_READ, data=read)
+
+
+def read(conn, mask):
+    try:
+        data = conn.recv(1024)
+        if not data:
+            sel.unregister(fileobj=conn)
+            return
+        print(data)
+        conn.send(b"server return: %s" % data)
+    except ConnectionResetError:
+        sel.unregister(fileobj=conn)
+        conn.close()
+
+
+if __name__ == '__main__':
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('', 5010))
+    s.listen(5)
+    s.setblocking(False)  # 设置socket的接口为非阻塞
+    
+    # 对应系统调用就是 epoll_ctl
+    sel.register(fileobj=s, events=selectors.EVENT_READ, data=accept)   # fileobj 事件(即fd), events：EVENT_READ|EVENT_WRITE, data: 有IO时，回调函数
+    while True:
+    	# 对应系统调用就是 epoll_wait
+        events = sel.select(timeout=None)
+        for event_obj, mask in events:
+            callbackfunc = event_obj.data
+            callbackfunc(event_obj.fileobj, mask)
+```
+#### 系统调用跟踪
+1. 执行程序，查看系统调用。
+
+   1.1 可见先调用epoll_create创建了epoll，对应的fd为3
+
+   1.2 然后创建了socket，对应fd为4
+
+   1.3 给socket 绑定监听端口、ip，设置为非阻塞IO，并开始监听
+
+   1.4 调用epoll_ctl，将socket添加到epoll中
+
+   1.5 程序调用 系统调用epoll_wait，等待返回有IO变化的事件。(此处是阻塞调用，也可以设置非阻塞，从而让程序可以执行其他计算操作)
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/epoll-1.png)
+
+2. 另一个窗口建立连接，观察系统调用。
+
+   2.1 epoll_wait 返回了一条有IO变化的事件
+
+   2.2 应用程序拿到这个事件之后，判断是有连接来了，调用accept建立连接
+
+   2.3 建立连接之后，得到sock，并设置为非阻塞IO
+
+   2.4 继续调用epoll_ctl，将sock也添加到epoll中，由epoll来监控IO变化
+
+   2.5 应用程序逻辑处理完成，调用epoll_wait，等待新的IO事件。
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/epoll-2.png)
+
+3. 在已有连接，发送一条数据，观察系统调用。
+
+   3.1 epoll_wait 再次返回了一条有IO变化的事件
+
+   3.2 应用程序拿到事件后，判断是sock读取事件，就调用recvfrom，读取客户端发来的消息
+
+   3.3 系统调用write，打印到标准输出，fd为1，即标准输出
+
+   3.4 系统调用sendto，发送到客户端
+
+   3.4 应用程序逻辑处理完成，继续等待新的IO事件。
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/epoll-3.png)
