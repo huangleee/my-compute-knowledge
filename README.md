@@ -671,7 +671,7 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 
 - 底层数据结构：大部分存储引擎，底层默认都是B+树，而MEMEORY ，底层数据结构是 哈希
 
-** B+ 树 是对 B树的优化，以下为 B树查找示例**
+**B+ 树 是对 B树的优化，以下为 B树查找示例**
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/BTree.png)
 
 - InnoDB: 默认存储引擎。
