@@ -587,6 +587,20 @@ redis使用惰性删除和定期删除，和通过redis.conf 中配置hz 来配�
      - 恢复速度慢，记录的是命令，需要一步步执行。
      - 文件体积大
  
+ **RDB与AOF持久化，都只能一定限度内，解决程序或操作系统宕机的情况，无法解决硬件损坏时，系统的高可用**
+ #### redis集群主从复制
+ 介绍：在redis主服务器的硬件设备出现问题的情况下，**手动切换**程序的redis为另一台从服务器，保证系统的可用性。
+ 
+ - **同步方式**
+   - 全量复制：一般在从服务器第一次加入集群时，执行全量复制。从redis加入之后，给主redis发送SYNC命令，来进行全量复制。从服务器可以随时发起SYNC指令来进行全量复制
+   - 增量复制：主服务器接收写操作时，会发送一份给从服务器。
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/redis/sync.png)
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/redis/sync-add.png)
+
+#### redis集群-哨兵模式
+介绍：主从模式在主服务器出现宕机时，需要手动切换主节点，此时在宕机到手动切换过程中，服务处于不可用状态。因此可以增加一个哨兵进程，这个进程会不停监控所有节点的状态，如果发现主节点不可用了，主动将一个从节点切换为主节点。
+
 -------------------
 ## docker
 
