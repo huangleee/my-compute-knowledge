@@ -666,7 +666,10 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
   - BLACKHOLE
   - CSV
   - ARCHIVE
+
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/engines.png)
+
+- 底层数据结构：大部分存储引擎，底层默认都是B+树，而MEMEORY ，底层数据结构是 哈希
 
 - InnoDB: 默认存储引擎。
   - **支持事务**
