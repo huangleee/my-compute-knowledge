@@ -668,6 +668,19 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
   - ARCHIVE
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/engines.png)
 
+- InnoDB: 默认存储引擎。
+  - **支持事务**
+  - **支持表级锁、行级锁**，适合高并发写入场景。同时，开销会因为行级锁变大，也更容易死锁。
+  - **支持外键**
+
+- MyISAM
+  - 不支持事务
+  - 表级锁，不适合高并发写入场景。锁带来的开销会小，不容易死锁。
+  - 不支持外键
+  - 查询性能更好，适用于大量查询的场景。
+
+
+
 ------------
 ## 算法
 
