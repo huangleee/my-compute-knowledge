@@ -653,8 +653,20 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 
 ------------------
 ## mysql
+### 存储引擎
+介绍：数据在磁盘上的不同组织形式。引擎不同，在磁盘上的表现形式不同。因此，在数据的存储、读取方式上，都会有差别。
 
-
+- 类型：
+  - **InnoDB**
+  - **MyISAM**
+  - MEMORY
+  - FEDERATED
+  - PERFORMANCE_SCHEMA
+  - MRG_MYISAM
+  - BLACKHOLE
+  - CSV
+  - ARCHIVE
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/engines.png)
 
 ------------
 ## 算法
