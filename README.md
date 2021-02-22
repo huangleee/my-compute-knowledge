@@ -746,6 +746,15 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 **最左匹配场景示例
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/example.png)
 
+  - 索引失效：使用索引时，一些错误使用会导致索引不生效
+    - 使用like时，% 在字符最前面，会导致索引失效
+    - 组合索引时，不符合最左匹配规则。
+    - 使用or，有些场景会失效，最好在使用时，使用explain 去调试：
+      - 当or条件中包含非索引字段，索引失效。
+      - 当or条件中都是普通索引时，索引生效。
+    - 范围操作(> < between >= <=), 普通索引可以生效，但是在组合索引中，按照最左匹配规则，范围操作后的索引都会失效
+    - 查询操作中，有隐式类型转换时，索引失效，如 字段 xx 为 varchar类型，此时用 where xx = 1; 索引就会失效，因为会隐式的将xx的值从int转换为varchar
+
 ------------
 ## 算法
 
