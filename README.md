@@ -722,17 +722,25 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
   - 回表：表中有多个索引，此时需要获取某条记录的全量数据, 如: select * from user where name = 'xx'; (主键为id，name为普通索引)。此时需要通过索引 name 的B+树的叶子节点，查找到对应数据在主键B+树上的索引，再去主键的树上查找，并拿到全量数据。
   - 索引覆盖：表中有多个索引，此时需要获取某条记录的部分数据（只包含索引与主键索引）, 如: select id, name from user where name = 'xx'; 此时只需要在 索引 name 的 B+ 树上找到对应的叶子节点，就能得到 主键id 和 自己的数据。
 
-  - 最左匹配原则: **创建索引时，使用了联合索引**，如(name, age, sex)。此时使用name、age、sex 去查找记录时，必须满足最左匹配原则。**只有联合索引才有该限制，但是在表中所有列，都是索引时，不需要满足最左匹配原则，索引也生效**
+  - 最左匹配原则: **创建索引时，使用了联合索引**，如(name, age, sex)。此时使用name、age、sex 去查找记录时，必须满足最左匹配原则。**只有联合索引才有该限制，但是查询的列，都是索引列时，不需要满足最左匹配原则，索引也生效**
     - 原因：使用联合索引创建B+树时，是按照从左到右创建搜索树的，所以根据联合索引查找数据时，也必须满足从左到右的顺序。
     - 示例：
       - select * from user where name = '张三' and age = 18 and sex = 'man'; 此时满足最左匹配原则，先根据name，找到相同的，再去根据age，最后根据sex查找。
       - select * from user where age = 18 and sex = 'man'; 此时不满足最左匹配原则，因为 name 是联合索引最外层索引，没有 name 就没办法查找。
-      - select * from user where name = '张三' and sex = 'man'; 此时不满足最左匹配原则，先根据 name 找到相同的，但是 age 缺失，只能从所有满足 name 条件的数据里面，挨个去匹配 sex。
+      - select * from user where name = '张三' and sex = 'man'; 此时满足最左匹配原则，先根据 name 找到相同的，但是 age 缺失，只能从所有满足 name 条件的数据里面，挨个去匹配 sex。
 	
   - 索引下推：同最左匹配原则，必须是联合索引才有。
     - 示例：select * from user where name = '张三' and age = '18'; 符合最左匹配原则
     - 没有索引下推时，会通过 name 找到相同的，然后读取所有数据到内存中(从磁盘读出，IO操作)，再根据 age 去查找记录。
     - 有索引下推时，直接通过 name 和 age 去存储引擎中查找符合的数据，再读出并返回(少了中间的磁盘读出操作)。
+
+**最左匹配**
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/left.png)
+
+**索引覆盖**
+虽然使用了联合索引，但是因为查询的列，都是索引列，所以不需要最左匹配原则
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/cover.png)
 
 ------------
 ## 算法
