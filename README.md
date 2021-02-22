@@ -738,6 +738,7 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/left.png)
 
 **索引覆盖**
+
 虽然使用了联合索引，但是因为查询的列，都是索引列，所以不需要最左匹配原则
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/cover.png)
