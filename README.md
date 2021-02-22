@@ -743,6 +743,9 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/cover.png)
 
+**最左匹配场景示例
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/mysql/example.png)
+
 ------------
 ## 算法
 
