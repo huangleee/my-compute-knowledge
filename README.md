@@ -1022,5 +1022,119 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 ### LRU算法
 介绍：一种缓存淘汰算法，全称 Least Recently Used, 即最近使用过的数据。
 
+#### 实现示例(golang)
+```go
+// 双向链表
+type Node struct {
+	key int
+	value int
+	prev *Node
+	next *Node
+}
+
+func NewNode(key, value int, prev, next *Node) *Node {
+	// 创建一个新的节点，并设置该节点的前驱和后继节点
+	node := &Node{
+		key: key,
+		value: value,
+		prev: prev,
+		next: next,
+	}
+	return node
+}
+
+type LRUCache struct {
+	head *Node
+	tail *Node
+	capacity int
+	size int
+	values map[int]*Node
+}
+
+
+func Constructor(capacity int) LRUCache {
+	head := &Node{}		// 创建伪头节点
+	tail := &Node{}		// 创建伪尾节点
+	head.next = tail	// 数据为空时，伪头节点的后置节点指向伪尾
+	tail.prev = head	// 伪尾的前驱节点，指向伪头
+
+	return LRUCache{
+		head: head,
+		tail: tail,
+		capacity: capacity,
+		size: 0,
+		values: make(map[int]*Node, capacity),		// 哈希表存key到节点的关系
+	}
+}
+
+// 修改头节点为某个已存在的节点
+func (this *LRUCache) setHead(node *Node) {
+
+	prev := node.prev		// 已存在的节点 的 前驱节点
+	next := node.next		// 已存在的节点 的 后置节点
+	// 在自己原来位置，删除自己
+	prev.next = next		// 修改当前节点的前驱节点的后置节点，为当前节点的后置节点
+	next.prev = prev		// 修改当前节点的后置节点的前驱节点，为当前节点的前驱节点
+
+	// 把自己放到头节点
+	node.next = this.head.next
+	node.prev = this.head
+	this.head.next.prev = node
+	this.head.next = node
+}
+
+// 添加新的节点为头节点
+func (this *LRUCache) addHead(node *Node) {
+	this.head.next.prev = node		// 修改 头节点的下一节点 的 前驱为新的节点
+	this.head.next = node		// 修改 头节点 的 后置节点 为新节点
+}
+
+// 时间复杂度要求O(1)
+func (this *LRUCache) Get(key int) int {
+	node, ok := this.values[key]
+	if !ok {
+		return -1
+	}
+	// 如果查到了数据，则需要这个节点，放到头节点
+	this.setHead(node)
+	return node.value
+}
+
+// 时间复杂度要求O(1)
+func (this *LRUCache) Put(key int, value int)  {
+	if n, ok := this.values[key]; ok {
+		n.value = value
+		this.setHead(n)
+		return
+	}
+	// 创建新节点
+	node := NewNode(key, value, this.head, this.head.next)
+
+	// 如果数据已满，则需要删除最后的数据，并将新的数据，加到头部
+	if this.size == this.capacity {
+		// 获取最后一个节点
+		latest := this.tail.prev
+		// 删除最后一个节点
+		delete(this.values, latest.key)		// 因为需要从哈希表中删除旧节点，所以旧节点得存key值
+		latest.prev.next = latest.next
+		latest.next.prev = latest.prev
+
+		// 将新的数据加到头部
+		this.addHead(node)
+		this.values[key] = node
+		return
+	}
+
+	// 数据未满，加到头部
+	this.addHead(node)
+
+	// 加到哈希表中
+	this.values[key] = node
+	// 记录当前数据量
+	this.size++
+	return
+}
+```
+
 ------------
 ## 设计模式
