@@ -1028,7 +1028,61 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 ### DP
 
 ### LRU算法
-介绍：一种缓存淘汰算法，全称 Least Recently Used, 即最近使用过的数据。
+- 介绍：一种缓存淘汰算法，全称 Least Recently Used, 即最近使用过的数据。实际上就是实现一种数据结构而已。
+
+- 实现要求：
+  - 输入一个容量，得到一个LRU数据结构对象
+  - 调用Put方法，放入key， value
+    - 如果key已存在，则需要修改 原key 的值为新的值，并把原key，放到头部。
+    - 如果key不存在，同时数据未达到容量，则在头部添加一个新的值
+    - 如果key已存在，则需要删掉最后一个值(最久没有访问的数据)，给新的数据腾出空间，然后添加新的数据到头部。
+  - 调用Get方法，如果key不存在，则返回 -1 ，如果key已存在，则返回对应的值，同时，因为访问了该数据，需要将其放到头部。
+
+- 实现分析：
+  - 不考虑查询与插入的时间复杂度，最容易想到的方案就是使用队列加哈希表, 思想如下：
+
+```go
+type LRUCache struct {
+	capacity int		// 记录容量
+	values map[int]int   // 哈希表，记录key-value
+	keys []int	// 队列(使用切片代替)
+}
+
+func Get(key int) int {
+	if key 不存在 {
+		return -1
+	}
+	// 存在, 则遍历 key 列表，找到key对应的索引位置
+	for i := range keys {
+		// 把该key放到队列的最前面
+		// 原位置前的元素，全部往后顺移一位
+	}
+	return 值
+}
+
+func Put(key, value) {
+	if key 存在 {
+		 // 同Get方法，移动位置
+		 values[key] = value 	// 修改原key对应的值为新值
+		 return
+	}
+	// 不存在时，则判断已加入的元素数量，是否达到容量
+	if len(keys) == capacity {
+		// 从keys 删除最后一个key
+		// 从values 中，删除最后一个key对应的值
+		// 将新的key放入到keys队列的头，其他元素顺移一位
+		// 把新的值，放入values中
+		return
+	}
+	// 未达到容量时，直接在 keys 队列头加入key即可
+	// 加入values
+}
+```
+
+  - 上面这种方案，效率极低，插入和查询，时间复杂度都是O(n), 如何实现O(1)的时间复杂度呢？ **哈希+双向链表**
+    - 使用双向链表可以做到O(1)时间复杂度的插入和删除操作
+    - 使用哈希，存key 与节点直接的关系，可以做到O(1) 时间复杂度的查找
+
 
 #### 实现示例(golang)
 ```go
