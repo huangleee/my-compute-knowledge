@@ -1028,7 +1028,7 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 ### DP
 
 ### LRU算法
-- 介绍：一种缓存淘汰算法，全称 Least Recently Used, 即最近使用过的数据，淘汰最长时间未访问过的数据。实际上就是实现一种数据结构而已。
+- 介绍：一种缓存淘汰算法，全称 Least Recently Used, 即最近使用过的数据，淘汰最长时间未访问过的数据(**按照时间次序来淘汰数据**)。实际上就是实现一种数据结构而已。
 - 扩展：**LFU：按照访问频率来淘汰数据。**
 
 - 实现要求：
