@@ -792,6 +792,113 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 
 ------------
 ## 算法
+### 树
+
+### 链表
+#### 单向链表
+```go
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+// 哨兵节点
+type MyLinkedList struct {
+	Lens int
+	Head *ListNode
+}
+
+func Constructor() MyLinkedList {
+	return MyLinkedList{}
+}
+
+func (this *MyLinkedList) Get(index int) int {
+	// 如果输入的下标，大于等于链表长度，或 下标小于 0 ，直接返回 -1
+	if index >= this.GetLens() || index < 0 {
+		return -1
+	}
+	if this.Head == nil { // 链表为空，直接返回 -1
+		return -1
+	}
+	head := this.Head
+	for i := 1; i <= index; i++ { // 此处必须是 <= index，因为就是要找到 index 位置的节点，并获取它的值
+		head = head.Next
+	}
+	return head.Val
+}
+
+func (this *MyLinkedList) GetLens() int {
+	return this.Lens
+}
+
+func (this *MyLinkedList) AddAtHead(val int) {
+	this.AddAtIndex(0, val)
+}
+
+func (this *MyLinkedList) AddAtTail(val int) {
+	this.AddAtIndex(this.Lens, val)
+}
+
+func (this *MyLinkedList) AddAtIndex(index, val int) {
+	if index > this.GetLens() { // 如果要加入的下标，超过了链表的长度，比如说：链表共有8个节点，则最大的节点对应的index应该是7，则插入新的值到最后，index应该是8，此时传入的index都大于8了，就插入不了
+		return
+	}
+	node := &ListNode{
+		Val: val,
+	}
+	if index == 0 { // 如果插入的节点下标为 0 ，直接插入首节点
+		node.Next = this.Head
+		this.Head = node
+		this.Lens++ // 插入完成记得要给链表长度加一
+		return
+	}
+	head := this.Head
+	for i := 1; i < index; i++ { // 如果不是插如首节点，就找到第 index - 1 的节点处
+		head = head.Next
+	}
+	node.Next = head.Next
+	head.Next = node
+	this.Lens++
+	return
+}
+
+func (this *MyLinkedList) DeleteAtHead() {
+	this.DeleteAtIndex(0)
+}
+
+func (this *MyLinkedList) DeleteAtTail() {
+	this.DeleteAtIndex(this.Lens - 1)
+}
+
+func (this *MyLinkedList) DeleteAtIndex(index int) {
+	if index >= this.GetLens() { // 与插入不同，插入允许输入index == 链表长度，即在最后插入，但是删除不行，index >= 链表长度，就没有节点了
+		return
+	}
+	if index == 0 { // 首节点
+		if this.Head == nil {
+			return
+		}
+		this.Head = this.Head.Next
+		this.Lens-- // 删除完成记得修改链表长度
+		return
+	}
+
+	head := this.Head
+	for i := 1; i < index; i++ { // 非首节点，找到 index - 1 的节点处
+		head = head.Next
+	}
+	this.Lens--
+	head.Next = head.Next.Next
+
+}
+```
+
+### 回溯算法
+
+### DP
+
+### LRU算法
+介绍：一种缓存淘汰算法，全称 Least Recently Used, 即最近使用过的数据。
 
 ------------
 ## 设计模式
