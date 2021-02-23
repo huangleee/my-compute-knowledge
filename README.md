@@ -490,8 +490,8 @@ while:
 
 
 ### 进程&&线程
-进程：操作系统资源分配的最小单位
-线程：任务调度和执行的基本单位。多线程共用进程的内存空间。
+- 进程：操作系统**资源分配的最小单位**
+- 线程：任务**调度和执行的基本单位**。多线程共用进程的内存空间。
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/process-thread-coroutine.png)
 
