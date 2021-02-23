@@ -477,14 +477,23 @@ while:
 ## 操作系统
 介绍：计算机系统由处理器(CPU)，内存，等各种输入输出设备的硬件设备组成。但是我们写的程序，处于安全的考虑，不能直接操作这些硬件设备，所以必须有一个程序，来帮助其他应用程序，完成硬件设备的操作，这个程序就是**操作系统**(kernel)。
 
-**中断**：在上面的IO中，最后一张图已提到过中断的概念，现在再介绍一下，如图所示：
+- **中断**：在上面的IO中，最后一张图已提到过中断的概念，现在再介绍一下，如图所示：
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/interrupt.png)
 
-**指令级别**
+
+- **指令级别**
+
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/instrcut-level.png)
+
+- **系统调用流程**
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/system-call.png)
 
 
 ### 进程&&线程
+进程：操作系统资源分配的最小单位
+线程：任务调度和执行的基本单位。多线程共用进程的内存空间。
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/process-thread-coroutine.png)
 
 
 -----------
