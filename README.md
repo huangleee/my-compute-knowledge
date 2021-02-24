@@ -325,11 +325,11 @@ for sock in list:
 
 ### epoll
 - linux系统下epoll操作
-  1. epoll_create: 创建一个epoll对象，返回一个fd，代表该epoll对象(linux下一切皆文件)
-  2. epoll_ctl: 控制一个epoll对象。定义: int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
-	2.1 op: EPOLL_CTL_ADD, EPOLL_CTL_MOD, EPOLL_CTL_DEL
-	2.2 event: EPOLLIN, EPOLLOUT, EPOLLRDHUP , EPOLLPRI, EPOLLERR, EPOLLHUP, EPOLLET, EPOLLONESHOT 
-  3. epoll_wait: 等待io事件，返回事件列表。
+  - epoll_create: 创建一个epoll对象，返回一个fd，代表该epoll对象(linux下一切皆文件)
+  - epoll_ctl: 控制一个epoll对象。定义: int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+    - op: EPOLL_CTL_ADD, EPOLL_CTL_MOD, EPOLL_CTL_DEL
+    - event: EPOLLIN, EPOLLOUT, EPOLLRDHUP , EPOLLPRI, EPOLLERR, EPOLLHUP, EPOLLET, EPOLLONESHOT 
+  - epoll_wait: 等待io事件，返回事件列表。
 
 - python3 使用epoll示例
 ```
