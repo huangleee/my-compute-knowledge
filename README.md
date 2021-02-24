@@ -1160,7 +1160,7 @@ func preorder(root *Node) []int {
 }
 ```
 
-- 中序遍历
+- 后序遍历
 ```
 func postorder(root *Node) []int {
 	var res []int = make([]int, 0)
@@ -1179,7 +1179,9 @@ func postorder(root *Node) []int {
 }
 ```
 
-
+### 前缀树
+介绍：前缀树是N叉树的一种特殊表现形式，用于存储字符串，每个节点都存储了字符串中的一个字符。
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/algorithm/trie.png)
 
 ## 链表
 ### 单向链表(golang实现)
