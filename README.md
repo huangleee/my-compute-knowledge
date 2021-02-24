@@ -203,10 +203,10 @@ mac地址变更流程
 
 # IO
 ## 同步阻塞IO（BIO）
-### 解释
-同步阻塞IO，服务端启动监听端口后，会**阻塞等待客户端连接**。客户端连接来了之后，会**起一个线程，去处理这个连接**。主线程会继续阻塞去等待新的客户端连接。而处理线程，则会**阻塞等待接收客户端发送来的消息**，并处理。
 
-### 示例代码
+- 介绍：同步阻塞IO，服务端启动监听端口后，会**阻塞等待客户端连接**。客户端连接来了之后，会**起一个线程，去处理这个连接**。主线程会继续阻塞去等待新的客户端连接。而处理线程，则会**阻塞等待接收客户端发送来的消息**，并处理。
+
+- 示例代码
 ```python
 import socket
 import threading
@@ -232,30 +232,28 @@ if __name__ == '__main__':
         t.start()
 ```
 
-### 内核调用跟踪
-注：linux环境下，使用strace命令，可以追踪系统调用
-
-1. 执行命令： strace -ff -o out python BIO.py
-2. 在另一个窗口，可以看到有一个文件出现
+- 内核调用跟踪 （注：linux环境下，使用strace命令，可以追踪系统调用）
+	1. 执行命令： strace -ff -o out python BIO.py
+	2. 在另一个窗口，可以看到有一个文件出现
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-1.png)
 
-3. 打开该文件，可以看到系统调用情况。socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3 得到一个socket，该socket对应的文件fd为3；将该fd，作为参数传递给 bind 函数，即该 fd 绑定指定IP和端口；接着 调用 listen，即该fd 开始监听连接，最大连接客户端数为 20；最后一行就是阻塞等待客户端的连接
+	3. 打开该文件，可以看到系统调用情况。socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3 得到一个socket，该socket对应的文件fd为3；将该fd，作为参数传递给 bind 函数，即该 fd 绑定指定IP和端口；接着 调用 listen，即该fd 开始监听连接，最大连接客户端数为 20；最后一行就是阻塞等待客户端的连接
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-2.png)
 
-4. 此时在另一个窗口，使用nc命令建立客户端连接  nc 127.0.0.1 5010，可看到目录下多了一个日志文件。
-5. 可以看到主线程收到连接请求之后，生成了一个新的fd，指代这个请求。然后创建了一个新的线程处理连接（系统调用中，clone方法创建线程，与主线程有不同的栈，相同的堆），并返回了新的线程的id。然后又阻塞等待新的连接
+	4. 此时在另一个窗口，使用nc命令建立客户端连接  nc 127.0.0.1 5010，可看到目录下多了一个日志文件。
+	5. 可以看到主线程收到连接请求之后，生成了一个新的fd，指代这个请求。然后创建了一个新的线程处理连接（系统调用中，clone方法创建线程，与主线程有不同的栈，相同的堆），并返回了新的线程的id。然后又阻塞等待新的连接
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-3.png)
 
-5. 新线程阻塞等待客户端发送数据
+	6. 新线程阻塞等待客户端发送数据
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-4.png)
 
-6. **使用man命令可以查看系统调用介绍，如 man 2 socket,  man 2 clone**
+	7. **使用man命令可以查看系统调用介绍，如 man 2 socket,  man 2 clone**
 
-### BIO 对应的系统调用伪代码
+- BIO 对应的系统调用伪代码
 ```
 socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3
 bind(3, {sa_family=AF_INET, sin_port=htons(5010), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
@@ -269,7 +267,7 @@ while:
 while:
 	recvfrom(4		 阻塞
 ```
-### 好处与弊端
+- 好处与弊端
 **好处： 一个服务端可以接受N个客户端的连接，一个客户端对应一个线程**
 
 **弊端： 阻塞调用，会创建N多个线程，消耗服务器资源，同时线程间切换，性能不高。**
