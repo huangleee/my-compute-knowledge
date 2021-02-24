@@ -805,6 +805,83 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 ------------
 # 算法
 ## 树
+介绍：一种典型的数据结构。树的每个节点都有一个值，以及包含子节点的列表。
+
+### 二叉树
+介绍：每个节点都包含一个值，同时，每个节点只有两个子节点，分别是左子节点与右子节点。
+
+- 数据结构：
+```
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+```
+
+- 二叉树遍历
+  - 深度优先搜索(DFS)：通常用**递归 或 栈**来实现遍历
+    - 前序遍历：根 - 左 - 右
+    - 中序遍历：左 - 根 - 右
+    - 后续遍历：左 - 右 - 根
+  - 广度优先搜索(BFS)：层序遍历，通常使用**队列**来实现遍历
+
+#### 深度优先搜索DFS
+- 递归遍历模板
+```
+func traverse(TreeNode root) {
+	// 前序遍历
+	traverse(root.Left)
+	// 中序遍历
+	traverse(root.Right)
+	// 后续遍历
+}
+```
+
+- 前序遍历
+  - 递归实现
+```
+func preorderTraversal(root *TreeNode) []int {
+	if root == nil {
+		return make([]int, 0)
+	}
+	var nodes = []int{root.Val}
+	left := preorderTraversal(root.Left)
+	nodes = append(nodes, left...)
+	right := preorderTraversal(root.Right)
+	nodes = append(nodes, right...)
+	return nodes
+}
+```
+  - 栈实现
+
+```
+func preorderTraversal2(root *TreeNode) []int {
+	// 非递归
+	if root == nil {
+		return nil
+	}
+	result := make([]int, 0)
+	stack := make([]*TreeNode, 0)
+
+	for root != nil || len(stack) != 0 {
+		for root != nil {
+			// 前序遍历，所以先保存结果
+			result = append(result, root.Val)
+			stack = append(stack, root)
+			root = root.Left
+		}
+		// pop
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		// result=append(result,node.Val) //中序遍历
+		root = node.Right
+	}
+	return result
+}
+```
+
+
 
 ## 链表
 ### 单向链表(golang实现)
