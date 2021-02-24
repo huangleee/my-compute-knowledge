@@ -1178,10 +1178,124 @@ func postorder(root *Node) []int {
 	return res
 }
 ```
+- 层序遍历
+```
+func LevelOrder(root *Node) [][]int {
+	var res = make([][]int, 0)
+	if root == nil {
+		return res
+	}
+	var queue = []*Node{root}
+	for len(queue) > 0 {
+		var nodeVals = make([]int, len(queue))
+		nodes := queue[:len(queue)]
+		queue = queue[len(queue):]
+		for i, n := range nodes {
+			nodeVals[i] = n.Val 
+			queue = append(queue, n.Children...)
+		}
+		res = append(res, nodeVals)
+	}
+	return res
+}
+```
+
 
 ### 前缀树
 介绍：前缀树是N叉树的一种特殊表现形式，用于存储字符串，每个节点都存储了字符串中的一个字符。
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/algorithm/trie.png)
+
+- 数据结构
+```
+// 第一种，以列表来存放子节点
+type Trie struct {
+	Nodes []*Trie		
+	R     int
+	IsEnd bool
+}
+
+// 第二种，以哈希来存放子节点
+type Trie2 struct {
+	Nodes map[byte]*Trie2
+	IsEnd bool	// 是否是单词结尾
+}
+```
+
+- 前缀树实现(哈希版)
+```
+// 前缀树节点表示方法二，用哈希存储子节点
+type Trie2 struct {
+	Nodes map[byte]*Trie2
+	IsEnd bool
+}
+
+func (this *Trie2) containerKey(b byte) bool {
+	_, ok := this.Nodes[b]
+	return ok
+}
+
+func (this *Trie2) get(b byte) *Trie2 {
+	return this.Nodes[b]
+}
+
+func (this *Trie2) put(b byte, node *Trie2) {
+	this.Nodes[b] = node
+}
+
+func (this *Trie2) isEnd() bool {
+	return this.IsEnd
+}
+
+func (this *Trie2) setEnd() {
+	this.IsEnd = true
+}
+
+func NewTrie2() Trie2 {
+	return Trie2{
+		Nodes: make(map[byte]*Trie2),
+		IsEnd: false,
+	}
+}
+
+func (this *Trie2) Insert(word string) {
+	root := this
+	for i := 0; i < len(word); i++ {
+		if root.containerKey(word[i]) {
+			root = root.get(word[i])
+		} else {
+			node := NewTrie2()
+			root.put(word[i], &node)
+			root = &node
+		}
+	}
+	root.setEnd()
+}
+
+func (this *Trie2) Search(word string) bool {
+	root := this
+	for i := 0; i < len(word); i++ {
+		if !root.containerKey(word[i]) {
+			return false
+		} else {
+			root = root.get(word[i])
+		}
+	}
+	return root.IsEnd
+}
+
+func (this *Trie2) StartsWith(word string) bool {
+	root := this
+	for i := 0; i < len(word); i++ {
+		if !root.containerKey(word[i]) {
+			return false
+		} else {
+			root = root.get(word[i])
+		}
+	}
+	return true
+}
+```
+
 
 ## 链表
 ### 单向链表(golang实现)
