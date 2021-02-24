@@ -1002,6 +1002,184 @@ func levelOrder(root *TreeNode) [][]int {
 }
 ```
 
+### 二叉搜索树
+介绍：二叉树的一种特殊表现形式，具体表现为：
+
+- 每个节点中的值必须大于（或等于）存储在其左侧子树中的任何值。
+- 每个节点中的值必须小于（或等于）存储在其右子树中的任何值。
+
+- 二叉搜索树查找元素
+```
+// 递归
+func searchBST(root *TreeNode, val int) *TreeNode {
+	var helper func(node *TreeNode) *TreeNode
+	helper = func(node *TreeNode) *TreeNode {
+		if node == nil {
+			return nil
+		}
+		if node.Val == val {
+			return node
+		} else if node.Val > val {
+			return helper(node.Left)
+		} else {
+			return helper(node.Right)
+		}
+	}
+	return helper(root)
+}
+
+// 迭代
+func searchBST1(root *TreeNode, val int) *TreeNode {
+	for root != nil && root.Val != val {
+		if root.Val > val {
+			root = root.Left
+		} else {
+			root = root.Right
+		}
+	}
+	return root
+}
+```
+
+- 二叉搜索树插入元素: 在二叉搜索树中，找到合适的叶子节点，然后创建新节点，插入到该叶子节点合适的位置。
+```
+// 递归
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	if root == nil {
+		return &TreeNode{Val: val}
+	}
+	if root.Val > val {
+		root.Left = insertIntoBST(root.Left, val)
+	} else {
+		root.Right = insertIntoBST(root.Right, val)
+	}
+	return root
+}
+
+// 递归
+func insertIntoBST1(root *TreeNode, val int) *TreeNode {
+	if root == nil {
+		return &TreeNode{Val: val}
+	}
+	var node = root
+	for node.Val != val && node != nil {
+		if node.Val < val && node.Right == nil {
+			node.Right = &TreeNode{Val: val}
+			break
+		} else if node.Val < val && node.Right != nil {
+			node = node.Right
+		} else if node.Val > val && node.Left == nil {
+			node.Left = &TreeNode{Val: val}
+			break
+		} else if node.Val > val && node.Left != nil {
+			node = node.Left
+		}
+	}
+	return root
+}
+
+```
+
+- 二叉搜索树删除元素：
+
+```
+/*
+分析：
+1. 如果要删除的节点，是叶子节点，则直接就可以删除
+2. 如果要删除的节点，不是叶子节点，有左右子树，则将其右子树，重新构造成一个（根节点没有左子树的二叉搜索树），然后将构造的树，替换该节点，原节点的左树，为新数的左子树
+3. 如果要删除的节点，不是叶子节点，有左树，没有右子树，直接将其左节点，替换该节点
+4. 如果要删除的节点，不是叶子节点，有右树，没左树，则直接将其右节点，替换该节点
+*/
+func deleteNode(root *TreeNode, key int) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	if root.Val > key {
+		root.Left = deleteNode(root.Left, key)
+	} else if root.Val < key {
+		root.Right = deleteNode(root.Right, key)
+	} else {
+		if root.Left == nil && root.Right == nil {
+			return nil
+		}
+		if root.Left != nil && root.Right == nil {
+			return root.Left
+		}
+		if root.Left != nil && root.Right != nil {
+			return buildTrees(root.Left, root.Right)
+		}
+		if root.Left == nil && root.Right != nil {
+			return root.Right
+		}
+	}
+	return root
+}
+```
+
+### N叉树
+介绍：n个节点的树。n叉树的中序遍历没有标准定义，不考虑。
+
+- 数据结构：
+```
+type Node struct {
+	Val      int
+	Children []*Node
+}
+```
+
+- 深度优先搜索递归遍历模板
+```
+func traverse(TreeNode root) {
+	// 前序遍历
+	for i := 0; i < len(root.Children); i++ {
+		traverse(root.Children[i])
+	}
+	// 后序遍历
+}
+```
+
+- 前序遍历
+```
+func preorder(root *Node) []int {
+	var res []int
+	var preOrderFunc func(node *Node)
+	preOrderFunc = func(node *Node) {
+		if node == nil {
+			return
+		}
+		// 处理自己的值
+		res = append(res, node.Val)
+		// 从左到右一个个处理自己的节点
+		for i := 0; i < len(node.Children); i++ {
+			preOrderFunc(node.Children[i])
+		}
+		return
+	}
+	preOrderFunc(root)
+	return res
+}
+```
+
+- 中序遍历
+```
+func postorder(root *Node) []int {
+	var res []int = make([]int, 0)
+	var postOrderFunc func(node *Node)
+	postOrderFunc = func(node *Node) {
+		if node == nil {
+			return
+		}
+		for _, c := range node.Children {
+			postOrderFunc(c)
+		}
+		res = append(res, node.Val)
+	}
+	postOrderFunc(root)
+	return res
+}
+```
+
+
 
 ## 链表
 ### 单向链表(golang实现)
