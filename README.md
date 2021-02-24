@@ -180,20 +180,20 @@ mac地址变更流程
 	
 > iptables与firewalld都不是真正的防火墙，它们都只是用来定义防火墙策略的防火墙管理工具而已，或者说，它们只是一种服务。iptables服务会把配置好的防火墙策略交由内核层面的**netfilter**网络过滤器来处理，而firewalld服务则是把配置好的防火墙策略交由内核层面的**nftables**包过滤框架来处理
 
-#### 表链
-- raw表： 加速数据包穿过防火墙的表，也就是增强防火墙性能的表。
-- manage表： 一种特殊的表，通过mangle表可以实现数据包的拆分和还原。
-- filter表： 负责包过滤。
-- nat表： 实现网络地址转换。
+- 表链
+  - raw表： 加速数据包穿过防火墙的表，也就是增强防火墙性能的表。
+  - manage表： 一种特殊的表，通过mangle表可以实现数据包的拆分和还原。
+  - filter表： 负责包过滤。
+  - nat表： 实现网络地址转换。
 
-#### 规则链
-- PREROUTING： 在网络层判断ip之前，即路由决策之前（决策是本机的数据包，还是需要转发的数据包）
-- INPUT： 路由决策之后，只过滤进入本机的数据包。
-- FORWARD： 路由决策之后，只过滤转发的数据包。
-- OUTPUT： 只针对本机发出的数据包，在路由判断之后，进行过滤。
-- POSTROUTING： 针对本机、以及转发的数据包，进行过滤。
+- 规则链
+  - PREROUTING： 在网络层判断ip之前，即路由决策之前（决策是本机的数据包，还是需要转发的数据包）
+  - INPUT： 路由决策之后，只过滤进入本机的数据包。
+  - FORWARD： 路由决策之后，只过滤转发的数据包。
+  - OUTPUT： 只针对本机发出的数据包，在路由判断之后，进行过滤。
+  - POSTROUTING： 针对本机、以及转发的数据包，进行过滤。
 
-#### 图示
+- 图示
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/%E9%98%B2%E7%81%AB%E5%A2%99.png)
 
 
@@ -233,25 +233,18 @@ if __name__ == '__main__':
 ```
 
 - 内核调用跟踪 （注：linux环境下，使用strace命令，可以追踪系统调用）
-	1. 执行命令： strace -ff -o out python BIO.py
-	2. 在另一个窗口，可以看到有一个文件出现
 
+  1. 执行命令： strace -ff -o out python BIO.py
+  2. 在另一个窗口，可以看到有一个文件出现
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-1.png)
-
-	3. 打开该文件，可以看到系统调用情况。socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3 得到一个socket，该socket对应的文件fd为3；将该fd，作为参数传递给 bind 函数，即该 fd 绑定指定IP和端口；接着 调用 listen，即该fd 开始监听连接，最大连接客户端数为 20；最后一行就是阻塞等待客户端的连接
-
+  3. 打开该文件，可以看到系统调用情况。socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3 得到一个socket，该socket对应的文件fd为3；将该fd，作为参数传递给 bind 函数，即该 fd 绑定指定IP和端口；接着 调用 listen，即该fd 开始监听连接，最大连接客户端数为 20；最后一行就是阻塞等待客户端的连接
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-2.png)
-
-	4. 此时在另一个窗口，使用nc命令建立客户端连接  nc 127.0.0.1 5010，可看到目录下多了一个日志文件。
-	5. 可以看到主线程收到连接请求之后，生成了一个新的fd，指代这个请求。然后创建了一个新的线程处理连接（系统调用中，clone方法创建线程，与主线程有不同的栈，相同的堆），并返回了新的线程的id。然后又阻塞等待新的连接
-
+  4. 此时在另一个窗口，使用nc命令建立客户端连接  nc 127.0.0.1 5010，可看到目录下多了一个日志文件。
+  5. 可以看到主线程收到连接请求之后，生成了一个新的fd，指代这个请求。然后创建了一个新的线程处理连接（系统调用中，clone方法创建线程，与主线程有不同的栈，相同的堆），并返回了新的线程的id。然后又阻塞等待新的连接
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-3.png)
-
-	6. 新线程阻塞等待客户端发送数据
-
+  6. 新线程阻塞等待客户端发送数据
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/BIO-4.png)
-
-	7. **使用man命令可以查看系统调用介绍，如 man 2 socket,  man 2 clone**
+  7. **使用man命令可以查看系统调用介绍，如 man 2 socket,  man 2 clone**
 
 - BIO 对应的系统调用伪代码
 ```
@@ -268,6 +261,7 @@ while:
 	recvfrom(4		 阻塞
 ```
 - 好处与弊端
+
 **好处： 一个服务端可以接受N个客户端的连接，一个客户端对应一个线程**
 
 **弊端： 阻塞调用，会创建N多个线程，消耗服务器资源，同时线程间切换，性能不高。**
@@ -275,10 +269,9 @@ while:
 --------------------------
 
 ## 同步非阻塞IO (NIO)
-### 解释
-同步非阻塞IO：服务端启动监听端口后，**不会阻塞等待客户端连接**。客户端连接建立之后，**不会阻塞等待接收客户端发送的消息**，而是会去处理计算问题（其他连接），过段时间后，**再去向内核(kernel)询问是否有数据**。
+介绍：同步非阻塞IO：服务端启动监听端口后，**不会阻塞等待客户端连接**。客户端连接建立之后，**不会阻塞等待接收客户端发送的消息**，而是会去处理计算问题（其他连接），过段时间后，**再去向内核(kernel)询问是否有数据**。
 
-### 示例代码
+- 示例代码
 ```
 import socket
 
@@ -314,17 +307,14 @@ if __name__ == '__main__':
             n.close()
         delList = []
 ```
-### 内核调用跟踪
+- 内核调用跟踪
 
-1. 执行程序，查看系统调用情况。可见先创建了一个socket，对应的fd为3；**紧接着给这个fd 加了一个非阻塞IO锁**；然后就绑定监听ip和端口；启动监听。此时，可见程序会不停触发 accept 调用。
-
+  1. 执行程序，查看系统调用情况。可见先创建了一个socket，对应的fd为3；**紧接着给这个fd 加了一个非阻塞IO锁**；然后就绑定监听ip和端口；启动监听。此时，可见程序会不停触发 accept 调用。
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/NIO-1.png)
-
-2. 另一个窗口，使用nc建立连接。可见此时有了一个客户端连接，这个sock 对应的fd 为 4；**紧接着给这个fd，也加了一个非阻塞IO锁**；此时程序调用recv 时，内核会立刻返回，而不会使整个程序阻塞。
-
+  2. 另一个窗口，使用nc建立连接。可见此时有了一个客户端连接，这个sock 对应的fd 为 4；**紧接着给这个fd，也加了一个非阻塞IO锁**；此时程序调用recv 时，内核会立刻返回，而不会使整个程序阻塞。
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/NIO-2.png)
 
-### NIO 对应系统调用伪代码
+- NIO 对应系统调用伪代码
 ```
 list = [] 	# 存储sock
 socket(AF_INET, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_IP) = 3
@@ -339,7 +329,7 @@ for sock in list:
    sock.recv()		# 步阻塞， 返回 -1 | str
 ```
 
-### 好处与弊端
+- 好处与弊端
 
 **好处：不用创建多个线程去处理客户端连接，避免资源浪费，单个线程就能非阻塞的处理所有客户端请求。**
 
@@ -349,8 +339,7 @@ for sock in list:
 ------------------------------------
 
 ## IO多路复用
-### 解释
-IO多路复用：使用select、poll、epoll来同时监听多个IO，*当IO对象有数据时，通知用户进程处理*
+介绍：IO多路复用：使用select、poll、epoll来同时监听多个IO，*当IO对象有数据时，通知用户进程处理*
 
 ### 分类
 **1. select：效率最低，有最大文件描述符限制。(用户进程查询哪些IO有变化时，需要传入fd列表)**
@@ -360,15 +349,14 @@ IO多路复用：使用select、poll、epoll来同时监听多个IO，*当IO对�
 **3. epoll：效率最高，没有最大描述符限制。(内核会记录所有注册的IO，用户进程查询哪些IO有数据时，无需传入fd列表，内核会告诉用户进程所有的有数据的IO列表)**
 
 ### epoll
-#### linux系统下epoll操作
-1. epoll_create: 创建一个epoll对象，返回一个fd，代表该epoll对象(linux下一切皆文件)
-2. epoll_ctl: 控制一个epoll对象。定义: int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+- linux系统下epoll操作
+  1. epoll_create: 创建一个epoll对象，返回一个fd，代表该epoll对象(linux下一切皆文件)
+  2. epoll_ctl: 控制一个epoll对象。定义: int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
 	2.1 op: EPOLL_CTL_ADD, EPOLL_CTL_MOD, EPOLL_CTL_DEL
 	2.2 event: EPOLLIN, EPOLLOUT, EPOLLRDHUP , EPOLLPRI, EPOLLERR, EPOLLHUP, EPOLLET, EPOLLONESHOT 
+  3. epoll_wait: 等待io事件，返回事件列表。
 
-3. epoll_wait: 等待io事件，返回事件列表。
-
-### python3 使用epoll示例
+- python3 使用epoll示例
 ```
 import socket
 import selectors
@@ -411,50 +399,31 @@ if __name__ == '__main__':
             callbackfunc = event_obj.data
             callbackfunc(event_obj.fileobj, mask)
 ```
-### 系统调用跟踪
-1. 执行程序，查看系统调用。
-
-   1.1 可见先调用epoll_create创建了epoll，对应的fd为3
-
-   1.2 然后创建了socket，对应fd为4
-
-   1.3 给socket 绑定监听端口、ip，设置为非阻塞IO，并开始监听
-
-   1.4 调用epoll_ctl，将socket添加到epoll中
-
-   1.5 程序调用 系统调用epoll_wait，等待返回有IO变化的事件。(此处是阻塞调用，也可以设置非阻塞，从而让程序可以执行其他计算操作)
-
+- 系统调用跟踪
+  1. 执行程序，查看系统调用。
+    1.1 可见先调用epoll_create创建了epoll，对应的fd为3
+    1.2 然后创建了socket，对应fd为4
+    1.3 给socket 绑定监听端口、ip，设置为非阻塞IO，并开始监听
+    1.4 调用epoll_ctl，将socket添加到epoll中
+    1.5 程序调用 系统调用epoll_wait，等待返回有IO变化的事件。(此处是阻塞调用，也可以设置非阻塞，从而让程序可以执行其他计算操作)
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/epoll-1.png)
-
-2. 另一个窗口建立连接，观察系统调用。
-
-   2.1 epoll_wait 返回了一条有IO变化的事件
-
-   2.2 应用程序拿到这个事件之后，判断是有连接来了，调用accept建立连接
-
-   2.3 建立连接之后，得到sock，并设置为非阻塞IO
-
-   2.4 继续调用epoll_ctl，将sock也添加到epoll中，由epoll来监控IO变化
-
-   2.5 应用程序逻辑处理完成，调用epoll_wait，等待新的IO事件。
-
+  2. 另一个窗口建立连接，观察系统调用。
+    2.1 epoll_wait 返回了一条有IO变化的事件
+    2.2 应用程序拿到这个事件之后，判断是有连接来了，调用accept建立连接
+    2.3 建立连接之后，得到sock，并设置为非阻塞IO
+    2.4 继续调用epoll_ctl，将sock也添加到epoll中，由epoll来监控IO变化
+    2.5 应用程序逻辑处理完成，调用epoll_wait，等待新的IO事件。
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/epoll-2.png)
 
-3. 在已有连接，发送一条数据，观察系统调用。
-
-   3.1 epoll_wait 再次返回了一条有IO变化的事件
-
-   3.2 应用程序拿到事件后，判断是sock读取事件，就调用recvfrom，读取客户端发来的消息
-
-   3.3 系统调用write，打印到标准输出，fd为1，即标准输出
-
-   3.4 系统调用sendto，发送到客户端
-
-   3.4 应用程序逻辑处理完成，继续等待新的IO事件。
-
+  3. 在已有连接，发送一条数据，观察系统调用。
+    3.1 epoll_wait 再次返回了一条有IO变化的事件
+    3.2 应用程序拿到事件后，判断是sock读取事件，就调用recvfrom，读取客户端发来的消息
+    3.3 系统调用write，打印到标准输出，fd为1，即标准输出
+    3.4 系统调用sendto，发送到客户端
+    3.4 应用程序逻辑处理完成，继续等待新的IO事件。
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/epoll-3.png)
 
-### 系统调用伪代码
+- 系统调用伪代码
 ```
 epoll_create() -> 3
 socket() -> 4
@@ -482,12 +451,11 @@ while:
 **同步IO和异步IO的区别在于，同步IO都需要用户进程主动去调用内核recv去获取数据。而异步IO，用户进程不需要去调用内核拿数据，内核会主动将数据拷贝到用户进程空间，再通知用户进程去buff中取**
 
 ## 扩展
-### 内核
-1. 内核是操作系统启动时，**第一个加载到内存中运行的程序**。
-2. **内核控制所有硬件设备，应用程序没办法直接操作硬件设备**，必须通过系统调用的方式，来调用内核，完成对硬件设备的间接使用。即内核提供了方法，供应用程序调用，以达到使用硬件的目的。
-3. 所有的IO模型演变，都是基于内核来实现的，只有内核更新了，支持某种IO模型，应用程序才能使用。
-4. **应用程序并非通过系统调用，直接调用内核中的方法**，而是通过cpu，来间接调用内核中的方法。因为出于保护内核的原因，**内核有保护模式，应用程序无法直接访问内存中的部分地址**，只能通过cpu间接调用。
-
+- 内核
+  - 内核是操作系统启动时，**第一个加载到内存中运行的程序**。
+  - **内核控制所有硬件设备，应用程序没办法直接操作硬件设备**，必须通过系统调用的方式，来调用内核，完成对硬件设备的间接使用。即内核提供了方法，供应用程序调用，以达到使用硬件的目的。
+  - 所有的IO模型演变，都是基于内核来实现的，只有内核更新了，支持某种IO模型，应用程序才能使用。
+  - **应用程序并非通过系统调用，直接调用内核中的方法**，而是通过cpu，来间接调用内核中的方法。因为出于保护内核的原因，**内核有保护模式，应用程序无法直接访问内存中的部分地址**，只能通过cpu间接调用。
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/IO/cpu.png)
 
 ---------------
