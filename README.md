@@ -838,8 +838,7 @@ func traverse(TreeNode root) {
 }
 ```
 
-- 前序遍历
-  - 递归实现
+- 前序遍历递归实现
 ```
 func preorderTraversal(root *TreeNode) []int {
 	if root == nil {
@@ -853,10 +852,10 @@ func preorderTraversal(root *TreeNode) []int {
 	return nodes
 }
 ```
-  - 栈实现
+- 前序遍历栈实现
 
 ```
-func preorderTraversal2(root *TreeNode) []int {
+func preorderTraversal(root *TreeNode) []int {
 	// 非递归
 	if root == nil {
 		return nil
@@ -880,7 +879,128 @@ func preorderTraversal2(root *TreeNode) []int {
 	return result
 }
 ```
+- 中序遍历递归实现
 
+```
+func inorderTraversal(root *TreeNode) []int {
+	var vals = make([]int, 0)
+
+	var inorder func(node *TreeNode)
+	inorder = func(node *TreeNode) {	// 匿名函数，闭包
+		if node == nil {
+			return
+		}
+		inorder(node.Left)
+		vals = append(vals, node.Val)
+		inorder(node.Right)
+	}
+	inorder(root)
+	return vals
+}
+```
+- 中序遍历栈实现
+```
+func inorderTraversal(root *TreeNode) []int {
+	var vals = make([]int, 0)
+	var nodes = make([]*TreeNode, 0)
+	cur := root
+	for len(nodes) > 0 || cur != nil {
+		for cur != nil { // 把当前节点的左节点依次压入栈中，那么栈中栈顶，就是最左节点
+			nodes = append(nodes, cur)
+			cur = cur.Left
+		}
+		node := nodes[len(nodes)-1]
+		nodes = nodes[0 : len(nodes)-1] // 出栈，此时就是最左节点
+		vals = append(vals, node.Val)
+		if node.Right != nil { // 如果当前节点还有右节点，那意味这当前节点属于某个根节点
+			cur = node.Right
+		}
+	}
+	return vals
+}
+```
+
+- 后续遍历递归实现
+```
+func postorderTraversal(root *TreeNode) []int {
+	var vals = make([]int, 0)
+	var postorder func(node *TreeNode)
+	postorder = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		postorder(node.Left)
+		postorder(node.Right)
+		vals = append(vals, node.Val)
+	}
+	postorder(root)
+	return vals
+}
+```
+
+- 后续遍历栈实现
+```
+func postorderTraversal(root *TreeNode) []int {
+	// 通过lastVisit标识右子节点是否已经弹出
+	if root == nil {
+		return nil
+	}
+	result := make([]int, 0)
+	stack := make([]*TreeNode, 0)
+	var lastVisit *TreeNode
+	for root != nil || len(stack) != 0 {
+		for root != nil {
+			stack = append(stack, root)
+			root = root.Left
+		}
+		// 这里先看看，先不弹出
+		node := stack[len(stack)-1]
+		// 根节点必须在右节点弹出之后，再弹出
+		if node.Right == nil || node.Right == lastVisit {
+			stack = stack[:len(stack)-1] // pop
+			result = append(result, node.Val)
+			// 标记当前这个节点已经弹出过
+			lastVisit = node
+		} else {
+			root = node.Right
+		}
+	}
+	return result
+}
+```
+
+#### 广度优先搜索BFS
+```
+func levelOrder(root *TreeNode) [][]int {
+	var vals = make([][]int, 0)
+	if root == nil {
+		return vals
+	}
+	// 创建一个队列（用切片模拟）
+	var queue = []*TreeNode{root}
+	nodes := len(queue) // nodes 记录 每层 的 节点数量
+	for nodes > 0 {
+		inside := make([]int, nodes)
+		// 从 队列中，取出 这层的节点，然后将每个节点的左右子节点，也放入到队列中，并将这个节点的值，放到该层的切片中
+		for i := 0; i < nodes; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			inside[i] = node.Val
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		// 将这层的切片，放入到总的二维切片中
+		vals = append(vals, inside)
+		// 设置下一层的节点数量
+		nodes = len(queue)
+	}
+	return vals
+}
+```
 
 
 ## 链表
