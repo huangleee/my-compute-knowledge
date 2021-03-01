@@ -455,6 +455,10 @@ while:
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/process-thread-coroutine.png)
 
+- 写时复制：
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/copy-on-write.png)
+
 
 -----------
 # redis
