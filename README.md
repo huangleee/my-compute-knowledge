@@ -440,6 +440,10 @@ while:
 - **中断**：在上面的IO中，最后一张图已提到过中断的概念，现在再介绍一下，如图所示：
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/interrupt.png)
 
+- DMA：
+  - 磁盘在将数据放入到磁盘缓冲区之后，使用中断的方式，来让CPU去将数据拷贝到内核，再拷贝到用户空间
+  - DMA 则是 在数据准备完之后，直接由 DMA 控制器，直接将数据拷贝到内存中，而不用通过中断的方式，来让CPU搬运数据
+
 
 - **指令级别**
 
