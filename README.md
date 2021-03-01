@@ -171,6 +171,14 @@ mac地址变更流程
 - 图示
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/%E9%98%B2%E7%81%AB%E5%A2%99.png)
 
+### HTTPS
+- 对称加密：客户端与服务端使用的加解密的密码一样
+- 非对称加密：客户端与服务端 加解密的密码不一样
+
+- 通信加解密过程
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/rsa.png)
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/rsa-process.png)
 
 -----------------------------------
 
