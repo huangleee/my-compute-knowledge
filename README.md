@@ -175,10 +175,15 @@ mac地址变更流程
 - 对称加密：客户端与服务端使用的加解密的密码一样
 - 非对称加密：客户端与服务端 加解密的密码不一样
 
-- 通信加解密过程
+- 非对称加密，通信加解密过程
+
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/rsa.png)
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/rsa-process.png)
+
+- https使用证书，通信加密过程
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/net/https-ca-ssl.png)
 
 -----------------------------------
 
