@@ -1054,7 +1054,7 @@ func insertIntoBST1(root *TreeNode, val int) *TreeNode {
 		return &TreeNode{Val: val}
 	}
 	var node = root
-	for node.Val != val && node != nil {
+	for node.Val != val {
 		if node.Val < val && node.Right == nil {
 			node.Right = &TreeNode{Val: val}
 			break
@@ -1097,14 +1097,34 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 		if root.Left != nil && root.Right == nil {
 			return root.Left
 		}
-		if root.Left != nil && root.Right != nil {
-			return buildTrees(root.Left, root.Right)
-		}
 		if root.Left == nil && root.Right != nil {
 			return root.Right
 		}
+		// 如果要删除的节点有左右子树
+		var t = root
+		root = min(root.Right)          // 从其右子树中，找到最小的节点，即将自己替换成其右子树中的最小值
+		root.Right = deleteMin(t.Right) // 再把原来节点右子树中的最小节点删掉，并赋值给最小节点的右子树     即相当于把右树中最小的节点，挪到了自己这个位置
+		root.Left = t.Left              // 然后将自己的左子树，换成最小节点的左子树
 	}
 	return root
+}
+
+// 找到树中，最小的节点
+func min(node *TreeNode) *TreeNode {
+	// 如果没有左节点，此时自己就是最小的
+	if node.Left == nil {
+		return node
+	}
+	// 如果有左节点，最小的节点，在其左子树中
+	return min(node.Left)
+}
+
+func deleteMin(node *TreeNode) *TreeNode {
+	if node.Left == nil {
+		return node.Right
+	}
+	node.Left = deleteMin(node.Left)
+	return node
 }
 ```
 
