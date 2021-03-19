@@ -659,6 +659,9 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 ---------------
 # kubernetes
 
+- pod 间网络通信
+ ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/kuberneters/k8s-pod2pod-network.png)
+
 ----------------
 # nginx
 
