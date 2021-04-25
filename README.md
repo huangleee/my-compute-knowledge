@@ -478,6 +478,10 @@ while:
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/copy-on-write.png)
 
+- 内存地址空间：
+
+![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/neicun-address-space.jpg)
+
 
 -----------
 # redis
