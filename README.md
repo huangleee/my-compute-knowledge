@@ -2,7 +2,6 @@
 
 介绍：将自己的部分计算机知识，通过绘图等方式记录下来，加深记忆，同时方便以后回顾时，能快速捡起。持续更新中 -- hl
 
-
 - [计算机网络](#计算机网络)
 	- [TCP/IP分层模型](#tcpip分层模型)
 	- [数据传输层](#数据传输层)
@@ -25,6 +24,7 @@
 	- [扩展](#扩展-1)
 - [操作系统](#操作系统)
 	- [进程&&线程](#进程线程)
+	- [虚拟内存](#虚拟内存)
 - [redis](#redis)
 	- [简介](#简介)
 	- [redis线程、多路复用模型解析](#redis线程多路复用模型解析)
@@ -51,6 +51,7 @@
 		- [缓存雪崩](#缓存雪崩)
 		- [分布式锁](#分布式锁)
 - [docker](#docker)
+	- [docker 网络](#docker-网络)
 - [kubernetes](#kubernetes)
 - [nginx](#nginx)
 - [mysql](#mysql)
@@ -83,7 +84,6 @@
 ## TCP/IP分层模型
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/TCP-IP%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B.png)
 
-- 数据包流转整体流程
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/compute/main/img/net/%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B.png)
 
 - 数据包编解码流程
@@ -679,6 +679,7 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
 -------------------
 # docker
 ## docker 网络
+
 - 名词解释
   - 网络命名空间(network namespace)：linux下，不同的网络命名空间，有各自独立的网卡、路由表、防火墙等，不同的网络命名空间，互不影响，彼此独立。
   - bridge：虚拟网络设备，类似二层交换机，数据进到 bridge 之后，会去根据 mac 地址判断走向。
@@ -691,6 +692,8 @@ XX：key存在时设置value，成功返回OK，失败返回(nil)
   - container：给新创建的容器指定一个已有的容器，共享该容器的网络命名空间。
   - overlay：用于docker集群间的通信。
   - user_defined_network：用户自定义网络，同一个网络内的容器彼此可见。
+
+
 ---------------
 # kubernetes
 
