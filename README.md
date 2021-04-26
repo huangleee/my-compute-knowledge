@@ -488,6 +488,8 @@ while:
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/virtual-memory.jpg)
 
+- **内存管理单元MMU（memory management unit）**。CPU中有一个设备为内存管理单元，cpu处理程序时，拿到了虚拟内存地址，是 MMU 通过页表，翻译成真实的物理地址的。因为页表存储在主存中，而 MMU 在cpu中，为了加快 MMU 查询速度，使用了**TLB（翻译后备缓冲器 Translation Lookaside Buffer），也叫快表**，TLB 可以理解为 **页表的高速缓存**，存储了少量的，高访问频率的页表项（PTE），避免了MMU 需要从主存读取的问题，提高了速度。
+
 
 -----------
 # redis
