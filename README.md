@@ -478,7 +478,7 @@ while:
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/copy-on-write.png)
 
-- 内存地址空间（已过时）：
+- 内存地址空间（已过时）：**内存分段**。**需要连续的内存空间，容易产生内存碎片**。同时为了避免内存碎片，会经常发生**内存交换**，因为分段，因此每次内存交换，都会写大段的内存数据，因而效率低。
 
 ![Aaron Swartz](https://raw.githubusercontent.com/huangleee/my-compute-knowledge/main/img/operation/neicun-address-space.jpg)
 
